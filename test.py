@@ -4,6 +4,8 @@ import os
 from VAE import VAE
 import cPickle
 import gzip
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 
 hu_encoder = 400
@@ -34,8 +36,17 @@ model = VAE(continuous, hu_encoder, hu_decoder, n_latent, x_train)
 
 model.load_parameters(path)
 
-x = model.decoder(x_train[0], np.random.randn(n_latent))
+dim_sq = x_train[0].size
+width = int(np.sqrt(dim_sq))
 
-print x
 
+for i in range(10):
+    z = np.zeros(n_latent, dtype=np.float32)
+    #z_random = np.array(np.random.randn(n_latent), dtype=np.float32)
+    z[1] = (i-5)/2.0
+    x, logpxz = model.decode(x_train[0], z)
+
+    plt.imshow(np.reshape(x, (width, width)), cmap='Greys')
+    filename = 'test' + str(i) + '.png'
+    plt.savefig(filename)
 

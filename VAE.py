@@ -80,6 +80,10 @@ class VAE:
 
         self.update, self.likelihood, self.encode, self.decode = self.create_gradientfunctions(x_train)
 
+        x = T.fvector()
+        z = T.fvector()
+        reconstructed_x = self.decoder(x, z)
+        self.decode = theano.function(inputs=[x, z], outputs=reconstructed_x)
 
 
     def encoder(self, x):
