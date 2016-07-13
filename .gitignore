@@ -1,5 +1,3 @@
 *.pyc
-*.npy
-*.pkl
 *.iml
 *.xml
