@@ -120,7 +120,6 @@ class VAE:
 
         return reconstructed_x, logpxz
 
-
     def create_gradientfunctions(self, x_train):
         x = T.matrix("x")
 
@@ -130,7 +129,7 @@ class VAE:
 
         mu, log_sigma = self.encoder(x)
         z = self.sampler(mu, log_sigma)
-        reconstructed_x, logpxz = self.decoder(x,z)
+        reconstructed_x, logpxz = self.decoder(x, z)
 
         # Expectation of (logpz - logqz_x) over logqz_x is equal to KLD (see appendix B):
         KLD = 0.5 * T.sum(1 + log_sigma - mu**2 - T.exp(log_sigma), axis=1)
