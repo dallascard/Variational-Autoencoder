@@ -42,9 +42,9 @@ width = int(np.sqrt(dim_sq))
 
 print "Doing predictions"
 for i in range(10):
-    z = np.zeros(n_latent, dtype=np.float32)
-    #z_random = np.array(np.random.randn(n_latent), dtype=np.float32)
-    z[2] = (i-5)/2.0
+    #z = np.zeros(n_latent, dtype=np.float32)
+    z = np.array(np.random.randn(n_latent), dtype=np.float32)
+    #z[0] = (i-5)/2.0
     x = model.decode(z)
 
     plt.imshow(np.reshape(x, (width, width)), cmap='Greys')
@@ -54,7 +54,7 @@ for i in range(10):
 for i in range(n_latent):
     z = np.zeros(n_latent, dtype=np.float32)
     #z_random = np.array(np.random.randn(n_latent), dtype=np.float32)
-    z[i] = 100
+    z[i] = 1
     x = model.get_class_exemplar(z)
 
     plt.imshow(np.reshape(x, (width, width)), cmap='Greys')
