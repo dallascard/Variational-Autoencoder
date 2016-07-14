@@ -91,16 +91,11 @@ class dVAE:
 
     def encoder(self, x):
         h_encoder = relu(T.dot(x, self.params['W_xh']) + self.params['b_xh'].dimshuffle('x', 0))
-
         h_latent = relu(T.dot(h_encoder, self.params['W_hh']) + self.params['b_hh'].dimshuffle('x', 0))
-        h_max = T.ge(h_latent, T.max(h_latent))
-        #h_max = T.extra_ops.to_one_hot(T.argmax(h_latent), self.n_latent)
 
-        #mu = T.dot(h_latent, self.params['W_hmu']) + self.params['b_hmu'].dimshuffle('x', 0)
-        #log_sigma = T.dot(h_latent, self.params['W_hsigma']) + self.params['b_hsigma'].dimshuffle('x', 0)
+        mu = T.dot(h_latent, self.params['W_hmu']) + self.params['b_hmu'].dimshuffle('x', 0)
+        log_sigma = T.dot(h_latent, self.params['W_hsigma']) + self.params['b_hsigma'].dimshuffle('x', 0)
 
-        mu = T.dot(h_max, self.params['W_hmu']) + self.params['b_hmu'].dimshuffle('x', 0)
-        log_sigma = T.dot(h_max, self.params['W_hsigma']) + self.params['b_hsigma'].dimshuffle('x', 0)
 
         return mu, log_sigma
 
