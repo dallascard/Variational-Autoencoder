@@ -98,10 +98,11 @@ class dVAE:
     def encoder(self, x):
         h_encoder = relu(T.dot(x, self.params['W_xh']) + self.params['b_xh'].dimshuffle('x', 0))
         h_latent = relu(T.dot(h_encoder, self.params['W_hh']) + self.params['b_hh'].dimshuffle('x', 0))
-        h_power = T.pow(h_latent/T.sum(h_latent), 3)
-        h_peaked = h_power / T.sum(h_power)
+        h_clip = T.clip(h_latent - T.max(h_latent) + 1, 0, 1)
+        #h_power = T.pow(h_latent/T.sum(h_latent), 3)
+        #h_peaked = h_power / T.sum(h_power)
 
-        mu, log_sigma = self.encode_from_last_layer(h_peaked)
+        mu, log_sigma = self.encode_from_last_layer(h_clip)
 
         return mu, log_sigma
 
