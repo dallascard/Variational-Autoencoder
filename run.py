@@ -9,7 +9,7 @@ np.random.seed(42)
 
 hu_encoder = 400
 hu_decoder = 400
-n_latent = 20
+n_latent = 10
 continuous = False
 n_epochs = 40
 
