@@ -54,7 +54,7 @@ for i in range(10):
 for i in range(n_latent):
     z = np.zeros(n_latent, dtype=np.float32)
     #z_random = np.array(np.random.randn(n_latent), dtype=np.float32)
-    z[i] = 1
+    z[i] = 100
     x = model.get_class_exemplar(z)
 
     plt.imshow(np.reshape(x, (width, width)), cmap='Greys')

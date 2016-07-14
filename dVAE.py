@@ -31,7 +31,7 @@ class dVAE:
 
         self.batch_size = batch_size
 
-        sigma_init = 0.01
+        sigma_init = 0.001
 
         create_weight = lambda dim_input, dim_output: self.prng.normal(0, sigma_init, (dim_input, dim_output)).astype(theano.config.floatX)
         create_bias = lambda dim_output: np.zeros(dim_output).astype(theano.config.floatX)
@@ -97,16 +97,16 @@ class dVAE:
 
     def encoder(self, x):
         h_encoder = relu(T.dot(x, self.params['W_xh']) + self.params['b_xh'].dimshuffle('x', 0))
-        h_latent = T.nnet.sigmoid(T.dot(h_encoder, self.params['W_hh']) + self.params['b_hh'].dimshuffle('x', 0))
+        h_latent = T.nnet.softmax(T.dot(h_encoder, self.params['W_hh']) + self.params['b_hh'].dimshuffle('x', 0))
         #h_clip = T.clip(h_latent - T.max(h_latent) + 1, 0, 1)
 
-        h_norm = h_latent / T.sum(h_latent)
-        h_softmax = T.nnet.softmax(h_latent)
+        #h_norm = h_latent / T.sum(h_latent)
+        #h_softmax = T.nnet.softmax(h_latent)
 
         #h_power = T.pow(h_latent/T.sum(h_latent), 3)
         #h_peaked = h_power / T.sum(h_power)
 
-        mu, log_sigma = self.encode_from_last_layer(h_softmax)
+        mu, log_sigma = self.encode_from_last_layer(h_latent)
 
         return mu, log_sigma
 
