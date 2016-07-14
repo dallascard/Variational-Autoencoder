@@ -99,7 +99,7 @@ class dVAE:
         h_encoder = relu(T.dot(x, self.params['W_xh']) + self.params['b_xh'].dimshuffle('x', 0))
         h_latent = T.nnet.softmax(T.dot(h_encoder, self.params['W_hh']) + self.params['b_hh'].dimshuffle('x', 0))
 
-        h_clip = T.clip(h_latent - T.max(h_latent) + 1, 0, 1)
+        h_clip = T.clip(2 * h_latent - T.max(h_latent), 0, 1)
 
         #h_norm = h_latent / T.sum(h_latent)
         #h_softmax = T.nnet.softmax(h_latent)
