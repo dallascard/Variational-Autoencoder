@@ -13,7 +13,7 @@ def relu(x):
     return T.switch(x<0, 0, x)
 
 
-class VAE:
+class dVAE:
     """This class implements the Variational Auto Encoder"""
     def __init__(self, continuous, hu_encoder, hu_decoder, n_latent, x_train, b1=0.95, b2=0.999, batch_size=100, learning_rate=0.001, lam=0):
         self.continuous = continuous

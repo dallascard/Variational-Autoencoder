@@ -2,6 +2,7 @@ import numpy as np
 import time
 import os
 from VAE import VAE
+from dVAE import dVAE
 import cPickle
 import gzip
 
@@ -31,7 +32,7 @@ else:
 path = "./"
 
 print "instantiating model"
-model = VAE(continuous, hu_encoder, hu_decoder, n_latent, x_train)
+model = dVAE(continuous, hu_encoder, hu_decoder, n_latent, x_train)
 
 
 batch_order = np.arange(int(model.N / model.batch_size))
