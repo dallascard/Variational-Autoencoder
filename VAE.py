@@ -82,7 +82,7 @@ class VAE:
 
         x = T.fvector()
         z = T.fvector()
-        reconstructed_x = self.decoder(x, z)
+        reconstructed_x, logpxz = self.decoder(x, z)
         self.decode = theano.function(inputs=[x, z], outputs=reconstructed_x)
 
 

@@ -2,6 +2,7 @@ import numpy as np
 import time
 import os
 from VAE import VAE
+from dVAE import dVAE
 import cPickle
 import gzip
 import matplotlib.pyplot as plt
@@ -10,9 +11,8 @@ import matplotlib.cm as cm
 
 hu_encoder = 400
 hu_decoder = 400
-n_latent = 20
+n_latent = 10
 continuous = False
-n_epochs = 40
 
 if continuous:
     print "Loading Freyface data"
@@ -32,21 +32,32 @@ else:
 path = "./"
 
 print "instantiating model"
-model = VAE(continuous, hu_encoder, hu_decoder, n_latent, x_train)
+model = dVAE(continuous, hu_encoder, hu_decoder, n_latent, x_train)
 
+print "Loading paramters"
 model.load_parameters(path)
 
 dim_sq = x_train[0].size
 width = int(np.sqrt(dim_sq))
 
-
+print "Doing predictions"
 for i in range(10):
     z = np.zeros(n_latent, dtype=np.float32)
     #z_random = np.array(np.random.randn(n_latent), dtype=np.float32)
-    z[1] = (i-5)/2.0
-    x, logpxz = model.decode(x_train[0], z)
+    z[2] = (i-5)/2.0
+    x = model.decode(z)
 
     plt.imshow(np.reshape(x, (width, width)), cmap='Greys')
     filename = 'test' + str(i) + '.png'
+    plt.savefig(filename)
+
+for i in range(n_latent):
+    z = np.zeros(n_latent, dtype=np.float32)
+    #z_random = np.array(np.random.randn(n_latent), dtype=np.float32)
+    z[i] = 1
+    x = model.get_class_exemplar(z)
+
+    plt.imshow(np.reshape(x, (width, width)), cmap='Greys')
+    filename = 'exemplar' + str(i) + '.png'
     plt.savefig(filename)
 

@@ -86,8 +86,14 @@ class dVAE:
 
         x = T.fvector()
         z = T.fvector()
-        reconstructed_x = self.decoder(x, z)
-        self.decode = theano.function(inputs=[x, z], outputs=reconstructed_x)
+        reconstructed_x, logpxz = self.decoder(x, z)
+        self.decode = theano.function(inputs=[z], outputs=reconstructed_x)
+
+        last_layer = T.fvector()
+        mu, log_sigma = self.encode_from_last_layer(last_layer)
+        class_exemplar, logpxz = self.decoder(x, mu)
+        self.get_class_exemplar = theano.function(inputs=[last_layer], outputs=class_exemplar)
+
 
     def encoder(self, x):
         h_encoder = relu(T.dot(x, self.params['W_xh']) + self.params['b_xh'].dimshuffle('x', 0))
@@ -95,9 +101,13 @@ class dVAE:
         h_power = T.pow(h_latent, 5)
         h_peaked = h_power / T.sum(h_power)
 
-        mu = T.dot(h_peaked, self.params['W_hmu']) + self.params['b_hmu'].dimshuffle('x', 0)
-        log_sigma = T.dot(h_peaked, self.params['W_hsigma']) + self.params['b_hsigma'].dimshuffle('x', 0)
+        mu, log_sigma = self.encode_from_last_layer(h_peaked)
 
+        return mu, log_sigma
+
+    def encode_from_last_layer(self, h_target):
+        mu = T.dot(h_target, self.params['W_hmu']) + self.params['b_hmu'].dimshuffle('x', 0)
+        log_sigma = T.dot(h_target, self.params['W_hsigma']) + self.params['b_hsigma'].dimshuffle('x', 0)
         return mu, log_sigma
 
     def sampler(self, mu, log_sigma):
@@ -129,6 +139,7 @@ class dVAE:
             logpxz = - T.nnet.binary_crossentropy(reconstructed_x, x).sum(axis=1)
 
         return reconstructed_x, logpxz
+
 
     def create_gradientfunctions(self, x_train):
         x = T.matrix("x")
